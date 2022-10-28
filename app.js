@@ -20,6 +20,7 @@ app.set('views','pages')
 
 //middleware
 app.use(express.urlencoded({extended:true}))
+app.use(express.static('staticfiles'))
 
 
 app.get('/register',(req,res)=>{
@@ -27,7 +28,13 @@ app.get('/register',(req,res)=>{
 })
 
 app.get('/home',(req,res)=>{
-    res.render('homepage');
+    Book.find()
+        .then((result)=>{
+            res.render('homepage',{books : result})
+        })
+        .catch((err)=>{
+            console.log(err)
+        })
 })
 
 app.post('/register',(req,res)=>{
