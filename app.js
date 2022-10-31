@@ -1,7 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose')
 const Student = require('./models/student')
-const Book = require('./models/book')
+const Book = require('./models/book');
+const { db } = require('./models/student');
 const app = express();
 //connection string to mongo db
 const dbURI = 'mongodb+srv://library:elibrary@trial.nacabxh.mongodb.net/E-Library?retryWrites=true&w=majority';
@@ -28,7 +29,8 @@ app.get('/register',(req,res)=>{
 })
 
 app.get('/home',(req,res)=>{
-    Book.find().distinct('college')
+    db.books.di
+    Book.find().project({college:"COCIS"})
         .then((result)=>{
             res.render('homepage',{books : result})
         })
