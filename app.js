@@ -28,7 +28,7 @@ app.get('/register',(req,res)=>{
 })
 
 app.get('/home',(req,res)=>{
-    Book.find()
+    Book.find().distinct('college')
         .then((result)=>{
             res.render('homepage',{books : result})
         })
@@ -61,4 +61,19 @@ app.post('/admin',(req,res)=>{
         .catch((err)=>{
             console.log(err)
         })
+})
+
+
+app.get('/books/:college',(req,res)=>{
+    const id = req.params.college
+    Book.findById(id)
+        .then((result)=>{
+            res.render('college',{collegebooks : result})
+        })
+        .catch((err)=>{
+            console.log(err)
+        })
+
+
+    
 })

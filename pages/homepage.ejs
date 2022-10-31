@@ -17,7 +17,9 @@
                     <div class="col-md-4">
                         <div class="card mt-1">
                             <div class="align-items-center text-center">
-                                <h3 class="college"><%= book.college %></h3>
+                                <a class="college" href="/books/<%= book._id %>">
+                                    <h3 class="college"><%= book.college %></h3>
+                                </a>    
                             </div>
                         </div>
                     </div>
