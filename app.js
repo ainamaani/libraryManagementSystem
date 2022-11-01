@@ -3,6 +3,7 @@ const mongoose = require('mongoose')
 const Student = require('./models/student')
 const Book = require('./models/book');
 const { db } = require('./models/student');
+const { restart } = require('nodemon');
 const app = express();
 //connection string to mongo db
 const dbURI = 'mongodb+srv://library:elibrary@trial.nacabxh.mongodb.net/E-Library?retryWrites=true&w=majority';
@@ -29,10 +30,16 @@ app.get('/register',(req,res)=>{
 })
 
 app.get('/home',(req,res)=>{
-    db.books.di
-    Book.find().project({college:"COCIS"})
+    Book.find()
         .then((result)=>{
             res.render('homepage',{books : result})
+        })
+        .catch((err)=>{
+            console.log(err)
+        })
+    Book.find().distinct("college")
+        .then((result)=>{
+            res.render('homepage',{colleges : result})
         })
         .catch((err)=>{
             console.log(err)
@@ -66,16 +73,16 @@ app.post('/admin',(req,res)=>{
 })
 
 
-app.get('/books/:college',(req,res)=>{
-    const id = req.params.college
-    Book.findById(id)
+app.get('/colleges/:college',(req,res)=>{
+    const college = req.params.college
+    Book.find(college)
         .then((result)=>{
-            res.render('college',{collegebooks : result})
+            res.render('college',{collegebooks: result})
         })
         .catch((err)=>{
             console.log(err)
         })
+})
 
 
     
-})
