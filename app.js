@@ -74,8 +74,11 @@ app.get('/colleges/:college',(req,res)=>{
         })
         .catch((err)=>{
             console.log(err)
-            res.render('college',{collegebooks:{ bookTitle: err }})
         })
+})
+
+app.use((req,res)=>{
+    res.render('404')
 })
 
 
