@@ -8,7 +8,10 @@
 </head>
 <body>
     <div class="singlecollege">
-        <h2><%= collegebooks.bookTitle %></h2>
+        <% collegebooks.forEach(collegebook=>{ %>
+            <h2><%= collegebook.bookTitle %></h2>
+        <%})%>
+        
     </div>
 </body>
 </html>
