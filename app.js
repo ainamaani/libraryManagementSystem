@@ -1,7 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose')
-const Student = require('./models/student')
+const Student = require('./models/student');
 const Book = require('./models/book');
+const TakenBook = require('./models/taken');
+const BorrowedBook = require('./models/bookedBooks');
+const ReturnedBook = require('./models/returned');
 const { db } = require('./models/student');
 const { restart } = require('nodemon');
 const app = express();

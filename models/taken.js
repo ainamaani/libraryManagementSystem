@@ -21,5 +21,5 @@ const takenBooksSchema = new Schema({
 },{timestamps:true})
 
 
-const TakenBooks = mongoose.model('BorrowedBook',takenBooksSchema)
-module.exports = TakenBooks
+const TakenBook = mongoose.model('BorrowedBook',takenBooksSchema)
+module.exports = TakenBook
