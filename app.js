@@ -78,7 +78,7 @@ app.get('/colleges/:college',(req,res)=>{
 })
 
 app.use((req,res)=>{
-    res.render('404')
+    res.status(404).render('404')
 })
 
 
