@@ -80,6 +80,11 @@ app.get('/colleges/:college',(req,res)=>{
         })
 })
 
+app.get('/collegebook/:id',(res,req)=>{
+    const id = req.params.id;
+    console.log(id)
+})
+
 app.use((req,res)=>{
     res.status(404).render('404')
 })

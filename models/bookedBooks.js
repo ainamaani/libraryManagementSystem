@@ -8,15 +8,15 @@ const bookedBooksSchema = new Schema({
     },
     bookTime: {
         type : String,
-        required : true
+        required : false
     }, 
     bookDate: {
         type : Date,
-        required: true
+        required: false
     },
     user:{
         type : String,
-        required : true
+        required : false
     }
 },{timestamps:true})
 
