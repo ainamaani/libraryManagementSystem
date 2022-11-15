@@ -1,5 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose')
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 const Student = require('./models/student');
 const Book = require('./models/book');
 const TakenBook = require('./models/taken');
@@ -13,7 +15,7 @@ const dbURI = 'mongodb+srv://library:elibrary@trial.nacabxh.mongodb.net/E-Librar
 //using mongoose to connect to mongo db
 mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then((result)=>{
-        app.listen(3000)
+        app.listen(3001)
     })
     .catch((err)=>{
         console.log(err)
@@ -32,6 +34,10 @@ app.get('/register',(req,res)=>{
     res.render('register');
 })
 
+app.get('/login',(req,res)=>{
+    res.render('login')
+})
+
 app.get('/home',(req,res)=>{
     Book.find().distinct("college")
         .then((result)=>{
@@ -42,8 +48,21 @@ app.get('/home',(req,res)=>{
         })
 })
 
-app.post('/register',(req,res)=>{
-    const student = new Student(req.body)
+app.post('/register',async (req,res)=>{
+    const hashedPassword = await bcrypt.hash(req.body.password, 10)
+    const student = new Student({
+        firstName : req.body.firstName,
+        lastName : req.body.lastName,
+        regNumber : req.body.regNumber,
+        stdNumber : req.body.stdNumber,
+        email : req.body.email,
+        gender : req.body.gender,
+        college : req.body.college,
+        course : req.body.course,
+        password : hashedPassword,
+     
+        
+    })
     student.save()
         .then((result)=>{
             res.redirect('/home')
@@ -52,6 +71,35 @@ app.post('/register',(req,res)=>{
             console.log(err)
         })
 })
+
+app.post('/login',(req,res)=>{
+    const username = req.body.username
+    const password = req.body.password
+
+    Student.findOne({$or: [{email:username},{stdNumber:username}]})
+    .then((student)=>{
+        if(student){
+            bcrypt.compare(password, student.password, function(err,result){
+                if(err){
+                    res.redirect('404')
+                }
+                if(result){
+                    let token = jwt.sign({name: student.stdNumber},'verySecretValue',{expiresIn: '1h'})
+                    res.redirect('homepage')
+                }else{
+                    res.redirect('404')
+                }
+            })
+        }
+        else{
+            res.redirect('register')
+        }
+    })
+    .catch((error)=>{
+        console.log(error)
+    })
+})
+
 
 app.get('/admin',(req,res)=>{
     res.render('librarian')
@@ -80,7 +128,7 @@ app.get('/colleges/:college',(req,res)=>{
         })
 })
 
-app.get('/collegebook/:id',(res,req)=>{
+app.delete('/collegebooks/:id',(res,req)=>{
     const id = req.params.id;
     console.log(id)
 })

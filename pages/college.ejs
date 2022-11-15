@@ -10,23 +10,25 @@
 <body>
     <div class="singlecollege">
         <% collegebooks.forEach(collegebook=>{ %>
-            <h2><%= collegebook.bookTitle %></h2>
+            <div>
+                <h2><%= collegebook.bookTitle %></h2>
+                <h2><%= collegebook._id %></h2>
+            </div>    
             <br>
             <br>
-            <a class="btn" data-book="<%= collegebook._id %>">Book</a>
+            <a href="#" class="delete" data-doc="<%= collegebook._id %>">Delete</a>
         <%})%>
         
     </div>
     <script>
-        const collegebook = document.querySelector('a.btn');
-
-        collegebook.addEventListener('click',(e) => {
-            const endpoint = '/collegebook/${collegebook.dataset.book}';
+        const trashcan = document.querySelector('a.delete');
+        trashcan.addEventListener('click',(e) => {
+            const endpoint = `/collegebooks/${trashcan.dataset.doc}`;
 
             fetch(endpoint,{
-                method: 'GET'
+                method: 'DELETE'
             })
-            .then((result)=>{
+            .then(()=>{
 
             })
             .catch((err)=>{

@@ -4,40 +4,31 @@ const Schema = mongoose.Schema
 const studentSchema = new Schema({
     firstName: {
         type : String,
-        required : true
     },
     lastName: {
         type : String,
-        required : true
     },
     regNumber: {
         type : String,
-        required : true
     },
     stdNumber: {
         type : Number,
-        required : true
     },
     email : {
         type : String,
-        required : true
     },
     gender: {
         type : String,
-        required : true
     },
     college: {
         type : String,
-        required : true
     },
     course: {
         type : String,
-        required : true
     },
-    // password: {
-    //     type : Mixed,
-    //     required : true
-    // }
+    password: {
+        type : String,
+    }
 
 },{timestamps:true})
 
