@@ -15,7 +15,7 @@ const dbURI = 'mongodb+srv://library:elibrary@trial.nacabxh.mongodb.net/E-Librar
 //using mongoose to connect to mongo db
 mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then((result)=>{
-        app.listen(3001)
+        app.listen(3000)
     })
     .catch((err)=>{
         console.log(err)
@@ -87,7 +87,7 @@ app.post('/login',(req,res)=>{
                     let token = jwt.sign({name: student.stdNumber},'verySecretValue',{expiresIn: '1h'})
                     res.redirect('homepage')
                 }else{
-                    res.redirect('404')
+                    console.log('Failed')
                 }
             })
         }
@@ -128,7 +128,12 @@ app.get('/colleges/:college',(req,res)=>{
         })
 })
 
-app.delete('/collegebooks/:id',(res,req)=>{
+app.get('/books/:id',(req,res)=>{
+    const id = req.params.id;
+    Book.findById(id)
+})
+
+app.post('/collegebooks/:id',(res,req)=>{
     const id = req.params.id;
     console.log(id)
 })
