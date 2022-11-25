@@ -131,7 +131,35 @@ app.get('/colleges/:college',(req,res)=>{
 app.get('/books/:id',(req,res)=>{
     const id = req.params.id;
     Book.findById(id)
+        .then((result)=>{
+            res.render('book',{book : result})
+        })
+        .catch((err)=>{
+            console.log(err)
+        })
 })
+
+app.get('/book/:id',(req,res)=>{
+    const id = req.params.id
+    Book.findById(id)
+        .then((result)=>{
+            console.log(result.bookTitle)
+            const bookedBook = new BorrowedBook({
+                bookTitle : result.bookTitle,     
+            })
+            .then((result)=>{
+                console.log("Successful")
+            })
+            .catch((err)=>{
+                console.log(err)
+            })
+        })
+        .catch((err)=>{
+            console.log(err)
+        })
+})
+    
+
 
 app.post('/collegebooks/:id',(res,req)=>{
     const id = req.params.id;
