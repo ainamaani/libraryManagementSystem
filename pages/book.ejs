@@ -12,7 +12,7 @@
             <h2><%= book.bookTitle %></h2>  
             <br>
             <br>
-            <a href="" class="borrow" data-book="<%= book._id %>" >Borrow</a>
+            <a href="" class="borrow btn btn-primary"  id="borrowBtn" data-book="<%= book._id %>" >Borrow</a>
     </div>
     <script>
         const borrowBook = document.querySelector('a.borrow')
@@ -28,6 +28,12 @@
             .catch((err)=>{
                 console.log(err)
             })
+        })
+
+
+        let borrowButton = document.querySelector('#borrowBtn');
+        borrowButton.addEventListener('click',()=>{
+            borrowButton.style.backgroundColor = '#4cae4c'
         })
     </script>
 </body>

@@ -143,10 +143,10 @@ app.get('/book/:id',(req,res)=>{
     const id = req.params.id
     Book.findById(id)
         .then((result)=>{
-            console.log(result.bookTitle)
             const bookedBook = new BorrowedBook({
                 bookTitle : result.bookTitle,     
             })
+            bookedBook.save()
             .then((result)=>{
                 console.log("Successful")
             })
@@ -159,7 +159,27 @@ app.get('/book/:id',(req,res)=>{
         })
 })
     
+app.get('/bookedbooks',(req,res)=>{
+    BorrowedBook.find()
+        .then((result)=>{
+            res.render('bookedBooks',{bookedBooks : result})
+        })
+        .catch((err)=>{
+            console.log(err)
+        })
+})
 
+app.get('/bookedbook/:id',(req,res)=>{
+    const id = req.params.id;
+    BorrowedBook.findById(id)
+        .then((result)=>{
+            res.render('bookedbook',{bookedBook:result})
+        })
+        .catch((err)=>{
+            console.log(err)
+        })
+    
+})
 
 app.post('/collegebooks/:id',(res,req)=>{
     const id = req.params.id;
