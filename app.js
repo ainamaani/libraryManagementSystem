@@ -181,6 +181,48 @@ app.get('/bookedbook/:id',(req,res)=>{
     
 })
 
+app.get('/bookedbookpicked/:id',(req,res)=>{
+    const id = req.params.id
+    BorrowedBook.findByIdAndDelete(id)
+        .then((result)=>{
+            const pickedBook = new TakenBook({
+                bookTitle : result.bookTitle,
+
+            })
+            pickedBook.save()
+            .then((result)=>{
+                console.log("Successful")
+            })
+            .catch((err)=>{
+                console.log(err)
+            })
+        })
+        .catch((err)=>{
+            console.log(err)
+        })
+})
+
+app.get('/takenbooks',(req,res)=>{
+    TakenBook.find()
+        .then((result)=>{
+            res.render('takenBooks',{takenBooks : result})
+        })
+        .catch((err)=>{
+            console.log(err)
+        })
+})
+
+app.get('/takenbook/:id',(req,res)=>{
+    const id = req.params.id
+    TakenBook.findById(id)
+        .then((result)=>{
+            res.render('takenBook',{ takenBook : result})
+        })
+        .catch((err)=>{
+            console.log(err)
+        })
+})
+
 app.post('/collegebooks/:id',(res,req)=>{
     const id = req.params.id;
     console.log(id)

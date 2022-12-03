@@ -4,19 +4,23 @@ const Schema = mongoose.Schema
 const takenBooksSchema = new Schema({
     bookTitle: {
         type : String,
-        required : true
+        required : false
     },
-    bookTime: {
+    takeTime: {
         type : String,
-        required : true
+        required : false
     }, 
-    bookDate: {
+    takeDate: {
         type : Date,
-        required: true
+        required: false
+    },
+    returnDate: {
+        type : Date,
+        required: false
     },
     user:{
         type : String,
-        required : true
+        required : false
     }
 },{timestamps:true})
 

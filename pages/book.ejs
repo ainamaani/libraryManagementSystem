@@ -18,7 +18,6 @@
         const borrowBook = document.querySelector('a.borrow')
         borrowBook.addEventListener('click',(e)=>{
             const endpoint = `/book/${borrowBook.dataset.book}`
-
             fetch(endpoint,{
                 method : 'GET'
             })
