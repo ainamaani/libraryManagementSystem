@@ -12,8 +12,26 @@
         <h3><%= takenBook.bookTitle %></h3>
         <br>
         <br>
-        <a href="" class="taken btn btn-primary" data-taken="<%=takenBook._id%>"> Returned </a>
+        <a href="" class="returned btn btn-primary" data-return="<%=takenBook._id%>">Returned</a>
     </div>
+    <script>
+        const returnBook = document.querySelector('a.returned')
+        returnBook.addEventListener('click',(e)=>{
+            const endpoint = `/takenbookreturned/${returnBook.dataset.return}`
+            fetch(endpoint,{
+                method : 'GET'
+            })
+            .then((result)=>{
+
+            })
+            .catch((err)=>{
+                console.log(err)
+            })
+        })
+    </script>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </html>
+
+
+<!-- Query selector and all, finally -->
