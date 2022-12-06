@@ -148,7 +148,7 @@ app.get('/book/:id',(req,res)=>{
             })
             bookedBook.save()
             .then((result)=>{
-                console.log("Successful")
+                res.json({redirect: '/bookedbooks'})
             })
             .catch((err)=>{
                 console.log(err)
@@ -191,7 +191,7 @@ app.get('/bookedbookpicked/:id',(req,res)=>{
             })
             pickedBook.save()
             .then((result)=>{
-                console.log("Successful")
+                res.json({ redirect: '/bookedbooks' })
             })
             .catch((err)=>{
                 console.log(err)
@@ -217,6 +217,17 @@ app.get('/takenbook/:id',(req,res)=>{
     TakenBook.findById(id)
         .then((result)=>{
             res.render('takenBook',{ takenBook : result})
+        })
+        .catch((err)=>{
+            console.log(err)
+        })
+})
+
+app.get('/takenbookreturned/:id',(req,res)=>{
+    const id = req.params.id
+    TakenBook.findByIdAndDelete(id)
+        .then((result)=>{
+            res.json({ redirect: '/takenbooks'})
         })
         .catch((err)=>{
             console.log(err)
