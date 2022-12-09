@@ -19,17 +19,10 @@
         returnBook.addEventListener('click',(e)=>{
             const endpoint = `/takenbookreturned/${returnBook.dataset.return}`
             fetch(endpoint,{
-                method : 'GET'
+                method : 'DELETE'
             })
-            .then((response)=>{
-                response.json()
-                .then((data)=>{
-                    window.location.href = data.redirect
-                })
-                .catch((err)=>{
-                    console.log(err)
-                })
-            })
+            .then((response)=> response.json())
+            .then((data)=> console.log(data))
             .catch((err)=>{
                 console.log(err)
             })

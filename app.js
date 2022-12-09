@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const json = require('json')
 const Student = require('./models/student');
 const Book = require('./models/book');
 const TakenBook = require('./models/taken');
@@ -223,11 +224,11 @@ app.get('/takenbook/:id',(req,res)=>{
         })
 })
 
-app.get('/takenbookreturned/:id',(req,res)=>{
+app.delete('/takenbookreturned/:id',(req,res)=>{
     const id = req.params.id
     TakenBook.findByIdAndDelete(id)
         .then((result)=>{
-            res.json({ redirect: '/takenbooks'})
+            res.json({ redirect: '/home' })
         })
         .catch((err)=>{
             console.log(err)
