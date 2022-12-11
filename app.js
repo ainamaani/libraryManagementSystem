@@ -140,12 +140,16 @@ app.get('/books/:id',(req,res)=>{
         })
 })
 
+let today = new Date()
+
+
 app.get('/book/:id',(req,res)=>{
     const id = req.params.id
     Book.findById(id)
         .then((result)=>{
             const bookedBook = new BorrowedBook({
-                bookTitle : result.bookTitle,     
+                bookTitle : result.bookTitle, 
+                bookDate : today   
             })
             bookedBook.save()
             .then((result)=>{
@@ -188,6 +192,7 @@ app.get('/bookedbookpicked/:id',(req,res)=>{
         .then((result)=>{
             const pickedBook = new TakenBook({
                 bookTitle : result.bookTitle,
+                bookDate : today
 
             })
             pickedBook.save()
@@ -246,3 +251,26 @@ app.use((req,res)=>{
 
 
     
+
+
+//DELETE BOOKS AFTER A CERTAIN TIME
+
+function bookingExpiry(){
+    BorrowedBook.find()
+        .then((result)=>{
+            if(Date.now() - result.bookDate > 1){
+                BorrowedBook.findByIdAndDelete(result._id)
+                    .then((result)=>{
+
+                    })
+                    .catch((err)=>{
+                        console.log(err)
+                    })
+            }
+        })
+        .catch((err)=>{
+            console.log(err)
+        })
+}
+
+setInterval(bookingExpiry,1000)
