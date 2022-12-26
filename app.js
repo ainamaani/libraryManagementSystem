@@ -1,6 +1,9 @@
 const express = require('express');
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
+const flash = require('connect-flash')
+const session = require('express-session')
+const expressLayouts = require('express-ejs-layouts')
 const jwt = require('jsonwebtoken')
 const json = require('json')
 const Student = require('./models/student');
@@ -10,7 +13,12 @@ const BorrowedBook = require('./models/bookedBooks');
 const ReturnedBook = require('./models/returned');
 const { db } = require('./models/student');
 const { restart } = require('nodemon');
+const passport = require('passport');
 const app = express();
+const { ensureAuthenticated } = require('./auth')
+
+require('./passport-config')(passport)
+
 //connection string to mongo db
 const dbURI = 'mongodb+srv://library:elibrary@trial.nacabxh.mongodb.net/E-Library?retryWrites=true&w=majority';
 //using mongoose to connect to mongo db
@@ -21,14 +29,33 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
     .catch((err)=>{
         console.log(err)
     })
+
+//middleware
+app.use(express.urlencoded({extended:true}))
+app.use(express.static('staticfiles'))
+app.use(expressLayouts);
+app.use(session({
+    secret: 'secret',
+    resave: true,
+    saveUninitialized: true
+}))
+app.use(passport.initialize())
+app.use(passport.session())
+app.use(flash())
+
+//Global variables
+app.use((req,res, next) => {
+    res.locals.success_msg = req.flash('success_msg');
+    res.locals.error_msg = req.flash('error_msg');
+    res.locals.error = req.flash('error');
+    next()
+})
+
 //register view engine
 app.set('view engine','ejs')
 //set views location
 app.set('views','pages')
 
-//middleware
-app.use(express.urlencoded({extended:true}))
-app.use(express.static('staticfiles'))
 
 
 app.get('/register',(req,res)=>{
@@ -39,68 +66,99 @@ app.get('/login',(req,res)=>{
     res.render('login')
 })
 
-app.get('/home',(req,res)=>{
+app.get('/home',ensureAuthenticated,(req,res)=>{
     Book.find().distinct("college")
         .then((result)=>{
-            res.render('homepage',{colleges : result})
+            res.render('homepage',{colleges : result, name: req.user.firstName})
         })
         .catch((err)=>{
             console.log(err)
         })
 })
 
-app.post('/register',async (req,res)=>{
-    const hashedPassword = await bcrypt.hash(req.body.password, 10)
-    const student = new Student({
-        firstName : req.body.firstName,
-        lastName : req.body.lastName,
-        regNumber : req.body.regNumber,
-        stdNumber : req.body.stdNumber,
-        email : req.body.email,
-        gender : req.body.gender,
-        college : req.body.college,
-        course : req.body.course,
-        password : hashedPassword,
-     
-        
-    })
-    student.save()
-        .then((result)=>{
-            res.redirect('/home')
-        })
-        .catch((err)=>{
-            console.log(err)
-        })
-})
+app.post('/register', (req,res)=>{
+    const { firstName, lastName, regNumber, stdNumber,  
+        email, gender, college, course, password, password2 } = req.body;
 
-app.post('/login',(req,res)=>{
-    const username = req.body.username
-    const password = req.body.password
+    let errors = [];
 
-    Student.findOne({$or: [{email:username},{stdNumber:username}]})
-    .then((student)=>{
-        if(student){
-            bcrypt.compare(password, student.password, function(err,result){
-                if(err){
-                    res.redirect('404')
-                }
-                if(result){
-                    let token = jwt.sign({name: student.stdNumber},'verySecretValue',{expiresIn: '1h'})
-                    res.redirect('homepage')
+    //Check required data
+    if(!firstName || !lastName || !regNumber || !stdNumber || !email || !gender ||
+        !college || !course || !password || !password2 ){
+            errors.push({ msg: 'Please fill in all fields' })
+    }
+
+    //Check passwords match
+    if(password !== password2){
+        errors.push({ msg: 'Passwords do not match' })
+    }
+
+    //Check pass length
+    if(password.length < 6){
+        errors.push({ msg: 'Password should be atleast 6 characters' })
+    }
+
+    if(errors.length > 0){
+        res.render('register',{
+            errors,firstName,lastName,regNumber,stdNumber,
+            email,gender,college,course,password,password2
+        })
+    }else{
+        //Validation passed
+        Student.findOne({ email: email })
+            .then((user)=>{
+                if(user){
+                    //User exits
+                    errors.push({ msg: 'Email is already registered' })
+                    res.render('register',{
+                        errors,firstName,lastName,regNumber,stdNumber,
+                        email,gender,college,course,password,password2
+                    })    
                 }else{
-                    console.log('Failed')
+                    const newUser = new Student({
+                        firstName,lastName,regNumber,stdNumber,
+                        email,gender,college,course,password
+                    })
+
+                    bcrypt.genSalt(10, (err,salt)=>{
+                        bcrypt.hash(newUser.password,salt, (err, hash)=>{
+                            if(err) throw err
+                            //Save password to hash
+                            newUser.password = hash;
+                            //Save user
+                            newUser.save()
+                                .then((user)=>{
+                                    req.flash('success_msg','You are now registered and can log in')
+                                    res.redirect('/login')
+                                })
+                                .catch((err)=>{
+                                    console.log(err)
+                                })
+                        })
+                    })
                 }
             })
-        }
-        else{
-            res.redirect('register')
-        }
-    })
-    .catch((error)=>{
-        console.log(error)
-    })
+    }
 })
 
+app.post('/login',(req,res,next) =>{
+    passport.authenticate('local',{
+        successRedirect: '/home',
+        failureRedirect: '/login',
+        failureFlash: true
+    })(req, res, next)
+})
+
+app.get('/logout',(req, res) =>{
+    req.logout(function(err){
+        if(err){
+            return next(err);
+        }
+        req.flash('success_msg','You are logged out');
+        res.redirect('/login');
+    });
+    
+});
 
 app.get('/admin',(req,res)=>{
     res.render('librarian')
@@ -140,7 +198,9 @@ app.get('/books/:id',(req,res)=>{
         })
 })
 
-let today = new Date()
+let today = Date.now()
+// let today_date = today.toLocaleDateString()
+// let today_time = today.toLocaleTimeString()
 
 
 app.get('/book/:id',(req,res)=>{
@@ -148,8 +208,9 @@ app.get('/book/:id',(req,res)=>{
     Book.findById(id)
         .then((result)=>{
             const bookedBook = new BorrowedBook({
-                bookTitle : result.bookTitle, 
-                bookDate : today   
+                bookTitle : result.bookTitle,
+                bookDate : today,
+   
             })
             bookedBook.save()
             .then((result)=>{
@@ -254,14 +315,16 @@ app.use((req,res)=>{
 
 
 //DELETE BOOKS AFTER A CERTAIN TIME
+const date = new Date()
+const currentDate = date.toLocaleDateString()
 
 function bookingExpiry(){
     BorrowedBook.find()
         .then((result)=>{
-            if(Date.now() - result.bookDate > 1){
+            if(currentDate - result.bookDate > 5){
                 BorrowedBook.findByIdAndDelete(result._id)
                     .then((result)=>{
-
+                        console.log("Deleted")
                     })
                     .catch((err)=>{
                         console.log(err)
@@ -274,3 +337,4 @@ function bookingExpiry(){
 }
 
 setInterval(bookingExpiry,1000)
+

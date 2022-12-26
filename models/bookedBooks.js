@@ -11,7 +11,7 @@ const bookedBooksSchema = new Schema({
         required : false
     }, 
     bookDate: {
-        type : Date,
+        type : String,
         required: false
     },
     user:{

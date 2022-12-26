@@ -24,18 +24,30 @@
                   <div class="col-xl-6">
                     <div class="card-body p-md-5 text-black">
                       <h3 class="mb-5 text-uppercase">Student registration form</h3>
-      
+
+                      <%if(typeof errors != 'undefined'){%>
+                        <% errors.forEach(function(error){%>
+                          <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            <%= error.msg %>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                        <%})%>
+                      <%}%>
                         <form action="/register" method="post">
                             <div class="row">
                                 <div class="col-md-6 mb-4">
                                   <div class="form-outline">
-                                    <input type="text" name="firstName" id="form3Example1m" class="form-control form-control-lg" />
+                                    <input type="text" name="firstName" id="form3Example1m" class="form-control form-control-lg" 
+                                    value="<%= typeof firstName != 'undefined' ? firstName : '' %>"/>
                                     <label class="form-label" for="form3Example1m">First name</label>
                                   </div>
                                 </div>
                                 <div class="col-md-6 mb-4">
                                   <div class="form-outline">
-                                    <input type="text" name="lastName"  id="form3Example1n" class="form-control form-control-lg" />
+                                    <input type="text" name="lastName"  id="form3Example1n" class="form-control form-control-lg" 
+                                    value="<%= typeof lastName != 'undefined' ? lastName : '' %>"/>
                                     <label class="form-label" for="form3Example1n">Last name</label>
                                   </div>
                                 </div>
@@ -44,20 +56,23 @@
                               <div class="row">
                                 <div class="col-md-6 mb-4">
                                   <div class="form-outline">
-                                    <input type="text" name="regNumber" id="form3Example1m1" class="form-control form-control-lg" />
+                                    <input type="text" name="regNumber" id="form3Example1m1" class="form-control form-control-lg"
+                                    value="<%= typeof regNumber != 'undefined' ? regNumber : '' %>" />
                                     <label class="form-label" for="form3Example1m1">Registration Number</label>
                                   </div>
                                 </div>
                                 <div class="col-md-6 mb-4">
                                   <div class="form-outline">
-                                    <input type="text" name="stdNumber" id="form3Example1n1" class="form-control form-control-lg" />
+                                    <input type="text" name="stdNumber" id="form3Example1n1" class="form-control form-control-lg" 
+                                    value="<%= typeof stdNumber != 'undefined' ? stdNumber : '' %>"/>
                                     <label class="form-label" for="form3Example1n1">Student Number</label>
                                   </div>
                                 </div>
                               </div>
               
                               <div class="form-outline mb-4">
-                                <input type="email" name="email" id="form3Example8" class="form-control form-control-lg" />
+                                <input type="password1" name="email" id="form3Example8" class="form-control form-control-lg"
+                                value="<%= typeof email != 'undefined' ? email : '' %>" />
                                 <label class="form-label" for="form3Example8">Email Address</label>
                               </div>
               
@@ -108,17 +123,20 @@
                               </div>
               
                               <div class="form-outline mb-4">
-                                <input type="text" name="course" id="form3Example9" class="form-control form-control-lg" />
+                                <input type="text" name="course" id="form3Example9" class="form-control form-control-lg"
+                                value="<%= typeof course != 'undefined' ? course : '' %>" />
                                 <label class="form-label" for="form3Example9">Course</label>
                               </div>
               
                               <div class="form-outline mb-4">
-                                <input type="password" name="password" id="form3Example90" class="form-control form-control-lg" />
+                                <input type="password" name="password" id="form3Example90" class="form-control form-control-lg"
+                                value="<%= typeof password != 'undefined' ? password : '' %>" />
                                 <label class="form-label" for="form3Example90">Password</label>
                               </div>
               
                               <div class="form-outline mb-4">
-                                <input type="password" name="password1" id="form3Example99" class="form-control form-control-lg" />
+                                <input type="password" name="password2" id="form3Example99" class="form-control form-control-lg"
+                                value="<%= typeof password2 != 'undefined' ? password2 : '' %>" />
                                 <label class="form-label" for="form3Example99">Confirm Password</label>
                               </div>
               

@@ -24,20 +24,56 @@
                   <div class="col-xl-6">
                     <div class="card-body p-md-5 text-black">
                       <h3 class="mb-5 text-uppercase">Student Login form</h3>
-      
+
+                        <%if(typeof errors != 'undefined'){%>
+                          <% errors.forEach(function(error){%>
+                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                              <%= error.msg %>
+                              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+                          <%})%>
+                        <%}%>
+
+                        <% if(success_msg != ''){ %>
+                          <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <%= success_msg %>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                        <%}%>
+
+                        <% if(error_msg != ''){ %>
+                          <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            <%= error_msg %>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                        <%}%>
+
+                        <% if(error != ''){ %>
+                          <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            <%= error %>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                        <%}%>
                         <form action="/login" method="post">
               
                               <div class="form-outline mb-4">
-                                <input type="text" name="username" id="form3Example8" class="form-control form-control-lg" />
-                                <label class="form-label" for="form3Example8">Username</label>
+                                <input type="text" name="email" id="form3Example8" class="form-control form-control-lg"
+                                value="<%= typeof email != 'undefined' ? email : '' %>" />
+                                <label class="form-label" for="form3Example8">Email</label>
                               </div>
-              
-              
-              
-                              
+
               
                               <div class="form-outline mb-4">
-                                <input type="password" name="password" id="form3Example90" class="form-control form-control-lg" />
+                                <input type="password" name="password" id="form3Example90" class="form-control form-control-lg" 
+                                value="<%= typeof password != 'undefined' ? password : '' %>"/>
                                 <label class="form-label" for="form3Example90">Password</label>
                               </div>
               
