@@ -66,10 +66,12 @@ app.get('/login',(req,res)=>{
     res.render('login')
 })
 
-app.get('/home',ensureAuthenticated,(req,res)=>{
+// ensureAuthenticated
+// name: req.user.firstName
+app.get('/home',(req,res)=>{
     Book.find().distinct("college")
         .then((result)=>{
-            res.render('homepage',{colleges : result, name: req.user.firstName})
+            res.render('homepage',{colleges : result })
         })
         .catch((err)=>{
             console.log(err)
@@ -198,7 +200,7 @@ app.get('/books/:id',(req,res)=>{
         })
 })
 
-let today = Date.now()
+// let today = Date.now()
 // let today_date = today.toLocaleDateString()
 // let today_time = today.toLocaleTimeString()
 
@@ -209,7 +211,7 @@ app.get('/book/:id',(req,res)=>{
         .then((result)=>{
             const bookedBook = new BorrowedBook({
                 bookTitle : result.bookTitle,
-                bookDate : today,
+                bookDate : Date.now().toString()
    
             })
             bookedBook.save()
@@ -253,7 +255,7 @@ app.get('/bookedbookpicked/:id',(req,res)=>{
         .then((result)=>{
             const pickedBook = new TakenBook({
                 bookTitle : result.bookTitle,
-                bookDate : today
+                returnDate : Date.now().toString()
 
             })
             pickedBook.save()
@@ -315,26 +317,28 @@ app.use((req,res)=>{
 
 
 //DELETE BOOKS AFTER A CERTAIN TIME
-const date = new Date()
-const currentDate = date.toLocaleDateString()
 
 function bookingExpiry(){
     BorrowedBook.find()
         .then((result)=>{
-            if(currentDate - result.bookDate > 5){
-                BorrowedBook.findByIdAndDelete(result._id)
+           for(i=0; i < result.length; i++){
+            if((Date.now().toString()) - result[i].bookDate > 3600000){
+                const id = result[i]._id
+                BorrowedBook.findByIdAndDelete(id)
                     .then((result)=>{
                         console.log("Deleted")
                     })
                     .catch((err)=>{
                         console.log(err)
                     })
+                
             }
+           }
         })
         .catch((err)=>{
             console.log(err)
         })
 }
 
-setInterval(bookingExpiry,1000)
+setInterval(bookingExpiry,5000)
 

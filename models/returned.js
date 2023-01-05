@@ -6,11 +6,11 @@ const returnedBooksSchema = new Schema({
         type : String,
         required : true
     },
-    bookTime: {
+    returnTime: {
         type : String,
         required : true
     }, 
-    bookDate: {
+    returnDate: {
         type : Date,
         required: true
     },

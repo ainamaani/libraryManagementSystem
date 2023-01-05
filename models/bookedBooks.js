@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
+let today = Date.now()
 const bookedBooksSchema = new Schema({
     bookTitle: {
         type : String,
@@ -12,7 +13,7 @@ const bookedBooksSchema = new Schema({
     }, 
     bookDate: {
         type : String,
-        required: false
+        required : false
     },
     user:{
         type : String,
