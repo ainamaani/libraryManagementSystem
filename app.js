@@ -347,7 +347,7 @@ function calculateFine(){
         .then((result)=>{
             for(b=0; b < result.length; b++){
                 let days= Date.now().toString() - result[b].pickupDate
-                if(days > 60000 && days < 7000){
+                if(days >= 432000000 && days <= 864000000){
                     const id = result[b]._id
                     TakenBook.updateOne(
                         {"_id": id},
@@ -359,12 +359,11 @@ function calculateFine(){
                         .catch((err)=>{
                             console.log(err)
                         })
-                    result[b].fine = 5000;
-                }else if(days > 60000 && days < 7000){
+                }else if(days > 864000000 && days <= 1728000000){
                     const id = result[b]._id
                     TakenBook.updateOne(
                         {"_id": id},
-                        {$set : {"fine":5000}}
+                        {$set : {"fine":15000}}
                         )
                         .then((result)=>{
                             console.log(result)
@@ -372,12 +371,11 @@ function calculateFine(){
                         .catch((err)=>{
                             console.log(err)
                         })
-                    result[b].fine = 5000;
-                }else if(days > 60000 && days < 7000){
+                }else if(days > 1728000000){
                     const id = result[b]._id
                     TakenBook.updateOne(
                         {"_id": id},
-                        {$set : {"fine":5000}}
+                        {$set : {"fine":50000}}
                         )
                         .then((result)=>{
                             console.log(result)
@@ -385,7 +383,6 @@ function calculateFine(){
                         .catch((err)=>{
                             console.log(err)
                         })
-                    result[b].fine = 5000;
                 }
                     
                 
