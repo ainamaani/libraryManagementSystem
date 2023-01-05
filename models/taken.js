@@ -14,13 +14,17 @@ const takenBooksSchema = new Schema({
         type : Date,
         required: false
     },
-    returnDate: {
-        type : Date,
+    pickupDate: {
+        type : String,
         required: false
     },
     user:{
         type : String,
         required : false
+    },
+    fine:{
+        type : Number,
+        default : 0
     }
 },{timestamps:true})
 

@@ -255,7 +255,7 @@ app.get('/bookedbookpicked/:id',(req,res)=>{
         .then((result)=>{
             const pickedBook = new TakenBook({
                 bookTitle : result.bookTitle,
-                returnDate : Date.now().toString()
+                pickupDate : Date.now().toString()
 
             })
             pickedBook.save()
@@ -342,3 +342,58 @@ function bookingExpiry(){
 
 setInterval(bookingExpiry,5000)
 
+function calculateFine(){
+    TakenBook.find()
+        .then((result)=>{
+            for(b=0; b < result.length; b++){
+                let days= Date.now().toString() - result[b].pickupDate
+                if(days > 60000 && days < 7000){
+                    const id = result[b]._id
+                    TakenBook.updateOne(
+                        {"_id": id},
+                        {$set : {"fine":5000}}
+                        )
+                        .then((result)=>{
+                            console.log(result)
+                        })
+                        .catch((err)=>{
+                            console.log(err)
+                        })
+                    result[b].fine = 5000;
+                }else if(days > 60000 && days < 7000){
+                    const id = result[b]._id
+                    TakenBook.updateOne(
+                        {"_id": id},
+                        {$set : {"fine":5000}}
+                        )
+                        .then((result)=>{
+                            console.log(result)
+                        })
+                        .catch((err)=>{
+                            console.log(err)
+                        })
+                    result[b].fine = 5000;
+                }else if(days > 60000 && days < 7000){
+                    const id = result[b]._id
+                    TakenBook.updateOne(
+                        {"_id": id},
+                        {$set : {"fine":5000}}
+                        )
+                        .then((result)=>{
+                            console.log(result)
+                        })
+                        .catch((err)=>{
+                            console.log(err)
+                        })
+                    result[b].fine = 5000;
+                }
+                    
+                
+            }
+        })
+        .catch((err)=>{
+            console.log(err)
+        })
+}
+
+setInterval(calculateFine,5000)

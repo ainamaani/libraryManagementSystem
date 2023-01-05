@@ -12,6 +12,7 @@
         <% takenBooks.forEach(takenBook=>{%>
             <a href="/takenbook/<%= takenBook._id %>">
             <h3><%= takenBook.bookTitle %></h3>
+            <h5><%= takenBook.fine %></h5>
             </a>
         <%})%>
     <%}else{%>
